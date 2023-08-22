@@ -12,7 +12,7 @@ def update(alpha):
 	noComponent, componentIndex = sp.sparse.csgraph.connected_components(updatedAdj, connection = 'weak', directed = False)
 	componentIndex = np.reshape(componentIndex, (N,N))
 	ax.clear()
-	ax.imshow(componentIndex, cmap = 'flag') #change colormap here... i couldn't find a better one.
+	ax.imshow(componentIndex) #change colormap here... i couldn't find a better one.
 #defining the reset function
 def reset(event):
 	alphaSlider.reset()
@@ -28,13 +28,11 @@ G = grid_2d_graph(N,N)
 print(f'Time taken to generate networkx grid: {time.time() - t1} seconds')
 #generating the sparse uniform probability matrix for checking if links get removed or not.
 t1 = time.time()
-GAdj = to_scipy_sparse_array(G)
-GAdj = sp.sparse.triu(GAdj, k=0)
-GAdj1 = sp.sparse.coo_matrix(GAdj)
-dataInitial = GAdj1.data
+probMatrix = to_scipy_sparse_array(G, format = 'coo')
+probMatrix = sp.sparse.triu(probMatrix, k=0)
+dataInitial = probMatrix.data
 data = dataInitial * np.random.uniform(0,1, dataInitial.shape[0])
-GAdj1.data = data
-probMatrix = GAdj1.copy()
+probMatrix.data = data
 
 print(f'Time taken to generate the probability matrix: {time.time() - t1} seconds')
 
@@ -58,4 +56,6 @@ resetAlpha = plt.axes([0.025, 0.5, 0.15, 0.15])
 button = Button(resetAlpha, 'Reset to Critical Value')
 button.on_clicked(reset)
 plt.show()
+
+
 
