@@ -1,0 +1,6 @@
+##### The requirements for running all the files in this repository ######
+
+numpy
+scipy
+matplotlib
+networkx

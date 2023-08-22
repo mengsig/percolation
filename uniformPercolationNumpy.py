@@ -15,7 +15,7 @@ def update(alpha):
 def reset(event):
 	alphaSlider.reset()
 
-N = 1000
+N = 5000
 nodes = N**2
 
 #generating the graph just for the adjacency matrix
