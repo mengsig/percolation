@@ -55,7 +55,7 @@ def return_index(cumsum, prob, j):
 
 #precompilation of jit code
 _, __, ___ = barabasi_albert_edgelist(100, 1)
-N = 50000
+N = 10000
 m = 2
 p = 0.9
 #t1 = time.time()
