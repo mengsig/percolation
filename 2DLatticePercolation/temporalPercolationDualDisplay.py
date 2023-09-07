@@ -33,7 +33,7 @@ def update(alpha):
 	bx.loglog(newUnique, newCounts, 'kx')
 
 #defining the data extraction function for bx.
-@jit(parallel = True)
+@njit(parallel = True)
 def generate_histogram_data(componentIndex, counts):
 	dataStruct = np.zeros(componentIndex.shape)
 	for i in prange(componentIndex.shape[0]):
@@ -50,7 +50,7 @@ def resume(event):
 	plt.gcf().canvas.stop_event_loop()
 
 #defining the number of nodes and grid size (N)
-N = 1000
+N = 500
 nodes = N**2
 #defining the number of iterations in the time steps (resolution)
 timeSteps = 250

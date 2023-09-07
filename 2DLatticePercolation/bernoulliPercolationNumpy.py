@@ -16,7 +16,7 @@ def update(val):
 		color = (np.random.uniform(0,1), np.random.uniform(0,1),np.random.uniform(0,1))
 		nx.draw(sg, pos, ax, edge_color = color, node_color = color) 
 	fig.canvas.draw_idle()
-N = 25 #size of the grid
+N = 500 #size of the grid
 
 # Creating the subplot
 
