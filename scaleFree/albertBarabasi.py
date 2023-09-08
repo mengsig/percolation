@@ -46,6 +46,12 @@ def barabasi_albert_edgelist(N, m):
 				cumsum[i] += 2
 			maxval = cumsum[i-1]
 	return row, col, data
+#create graph
+def barabasi_albert_graph(N,m):
+	row, col, data = barabasi_albert_edgelist(N, m)
+	GAdj = sp.sparse.coo_array((data, (row, col)), shape = (N, N))
+	GAdj = GAdj + GAdj.T
+	return GAdj
 
 @njit()
 def return_index(cumsum, prob, j):
@@ -62,9 +68,7 @@ p = 0.9
 #GAdj = barabasi_albert(N,m)
 #print(f'Time taken to generate a {N} node Albert-Barabasi network with kbar = {2*m} : {time.time() - t1} seconds')
 t1 = time.time()
-row, col, data = barabasi_albert_edgelist(N, m)
-GAdj = sp.sparse.coo_array((data, (row, col)), shape = (N, N))
-GAdj = GAdj + GAdj.T
+GAdj = barabasi_albert_graph(N,m)
 print(f'Time taken to generate a {N} node Albert-Barabasi network with kbar = {2*m} : {time.time() - t1} seconds')
 t1 = time.time()
 G = nx.barabasi_albert_graph(N, m)
