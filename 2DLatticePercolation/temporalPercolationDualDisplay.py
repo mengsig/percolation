@@ -48,8 +48,16 @@ def lattice(N):
 	GAdj = sp.sparse.coo_array((data, (row,col)), shape = (nodes,nodes))
 	return sp.sparse.triu(GAdj, k=0)
 	
-
 _ = lattice(10)
+
+@njit(parallel = True)
+def create_colors(componentIndex, counts):
+	colorIndex = np.zeros(componentIndex.shape)
+	N = componentIndex.shape[0]
+	for i in prange(componentIndex.shape[0]):
+		for j in range(componentIndex.shape[0]):
+			colorIndex[i][j] = counts[componentIndex[i][j]] 
+	return colorIndex
 
 #defining the update function
 def update(alpha):
@@ -57,13 +65,15 @@ def update(alpha):
 	updatedAdj = probMatrix > (1-alpha)
 	#now we find the largest component
 	noComponent, componentIndex = sp.sparse.csgraph.connected_components(updatedAdj, connection = 'weak', directed = False)
+	unique, counts = np.unique(componentIndex, return_counts = True)
 	componentIndex = np.reshape(componentIndex, (N,N))
+	ourColors = create_colors(componentIndex, counts)
+	#colorIndex = create_colors(componentIndex, colors)
 	ax.clear()
-	ax.imshow(componentIndex) #change colormap here... i couldn't find a better one.
+	ax.imshow(ourColors) #change colormap here... i couldn't find a better one.
 	#here we start plotting the distriubtion of component sizes
 	import time
 	t1 = time.time()
-	unique, counts = np.unique(componentIndex, return_counts = True)
 	t1 = time.time()
 	plotData = generate_histogram_data(componentIndex, counts)
 	newUnique, newCounts = np.unique(plotData, return_counts = True)
@@ -98,7 +108,8 @@ def resume(event):
 
 #defining the number of nodes and grid size (N)
 N = 500
-nodes = N**2
+nodes =1000 
+N**2
 #defining the number of iterations in the time steps (resolution)
 timeSteps = 250
 
@@ -129,6 +140,7 @@ t1 = time.time()
 probMatrix = lattice(N)
 GAdj = probMatrix > 0
 dataOrig = GAdj.data
+colors = np.random.uniform(0,1,nodes)
 print(probMatrix.shape)
 print(f'New algorithm time to create the probability matrix from scratch - including the grid itself: {time.time() - t1} seconds')
 
